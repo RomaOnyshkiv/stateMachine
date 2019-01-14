@@ -4,5 +4,6 @@ public enum MyStates {
     NEW,
     PENDING_REVIEW,
     PENDING_APPROVE,
-    APPROVED
+    APPROVED,
+    DELETED
 }

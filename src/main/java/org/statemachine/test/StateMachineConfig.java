@@ -12,6 +12,8 @@ import org.springframework.statemachine.state.State;
 import org.statemachine.test.enums.MyEvents;
 import org.statemachine.test.enums.MyStates;
 
+import java.util.EnumSet;
+
 
 @Log
 @Configuration
@@ -20,7 +22,7 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<MyStates, 
 
     @Override
     public void configure(StateMachineConfigurationConfigurer<MyStates, MyEvents> config) throws Exception {
-        StateMachineListenerAdapter<MyStates, MyEvents> adapter = new StateMachineListenerAdapter<MyStates, MyEvents>() {
+        StateMachineListenerAdapter<MyStates, MyEvents> adapter = new StateMachineListenerAdapter<>() {
             @Override
             public void stateChanged(State<MyStates, MyEvents> from, State<MyStates, MyEvents> to) {
                 log.info(String.format("state changed (from: %s to %s)", from + " ", to + " "));
@@ -39,20 +41,21 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<MyStates, 
 
         states.withStates()
                 .initial(MyStates.NEW)
-                .state(MyStates.PENDING_REVIEW)
-                .end(MyStates.PENDING_APPROVE)
-                .end(MyStates.APPROVED);
+                .end(MyStates.DELETED)
+                .states(EnumSet.allOf(MyStates.class));
 
     }
 
     @Override
     public void configure(StateMachineTransitionConfigurer<MyStates, MyEvents> transitions) throws Exception {
 
-        transitions.withExternal()
-                .source(MyStates.NEW).target(MyStates.PENDING_REVIEW).event(MyEvents.REQUEST_REVIEW)
-                .and().withExternal()
-                .source(MyStates.PENDING_REVIEW).target(MyStates.PENDING_APPROVE).event(MyEvents.REQUEST_APPROVE)
-                .and().withExternal()
-                .source(MyStates.PENDING_APPROVE).target(MyStates.APPROVED).event(MyEvents.APPROVE);
+        transitions
+                .withExternal().source(MyStates.NEW).target(MyStates.PENDING_REVIEW).event(MyEvents.REQUEST_REVIEW)
+                .and()
+                .withExternal().source(MyStates.PENDING_REVIEW).target(MyStates.PENDING_APPROVE).event(MyEvents.REQUEST_APPROVE)
+                .and()
+                .withExternal().source(MyStates.PENDING_APPROVE).target(MyStates.APPROVED).event(MyEvents.APPROVE)
+                .and()
+                .withExternal().source(MyStates.APPROVED).target(MyStates.DELETED).event(MyEvents.DELETE);
     }
 }
