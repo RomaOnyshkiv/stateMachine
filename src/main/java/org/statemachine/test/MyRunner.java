@@ -1,7 +1,6 @@
 package org.statemachine.test;
 
 import lombok.extern.java.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.statemachine.StateMachine;
@@ -16,7 +15,7 @@ public class MyRunner implements ApplicationRunner {
 
     private final StateMachineFactory<MyStates, MyEvents> factory;
 
-    public MyRunner(StateMachineFactory<MyStates, MyEvents> factory) {
+    MyRunner(StateMachineFactory<MyStates, MyEvents> factory) {
         this.factory = factory;
     }
 
