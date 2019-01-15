@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@Entity(name = "SomeEntity")
+@Entity(name = "Some")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,15 +21,15 @@ class MyEntity {
     private Long id;
     private String state;
 
-    public MyEntity(MyStates s) {
+    MyEntity(MyStates s) {
         this.setState(s);
     }
 
-    public MyStates getState() {
+    MyStates getState() {
         return MyStates.valueOf(state);
     }
 
-    public void setState(MyStates s) {
+    void setState(MyStates s) {
         this.state = s.name();
     }
 

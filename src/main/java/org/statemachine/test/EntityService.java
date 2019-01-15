@@ -37,8 +37,6 @@ public class EntityService {
     }
 
     MyEntity byId(Long id) {
-//        List<MyEntity> entities = this.entityRepo.findAllById(Collections.singletonList(id));
-//        return entities.get(0);
         return this.entityRepo.findAllById(Collections.singletonList(id)).get(0);
     }
 
@@ -87,7 +85,6 @@ public class EntityService {
 
 
     private StateMachine<MyStates, MyEvents> build(Long id) {
-//        MyEntity entity = this.entityRepo.getOne(id);
         List<MyEntity> entities = this.entityRepo.findAllById(Collections.singletonList(id));
         MyEntity entity = entities.get(0);
         String entityKey = Long.toString(entity.getId());

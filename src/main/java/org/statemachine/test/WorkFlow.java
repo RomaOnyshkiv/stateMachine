@@ -8,7 +8,7 @@ import java.util.List;
 @RestController
 public class WorkFlow {
 
-    EntityService entityService;
+    private EntityService entityService;
 
     WorkFlow(EntityService entityService) {
         this.entityService = entityService;
