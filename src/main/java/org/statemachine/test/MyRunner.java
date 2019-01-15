@@ -3,10 +3,7 @@ package org.statemachine.test;
 import lombok.extern.java.Log;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.config.StateMachineFactory;
 import org.springframework.stereotype.Component;
 import org.statemachine.test.enums.MyEvents;
 import org.statemachine.test.enums.MyStates;
@@ -15,35 +12,28 @@ import org.statemachine.test.enums.MyStates;
 @Component
 public class MyRunner implements ApplicationRunner {
 
-    private final StateMachineFactory<MyStates, MyEvents> factory;
+    private final EntityService service;
 
-    MyRunner(StateMachineFactory<MyStates, MyEvents> factory) {
-        this.factory = factory;
+    MyRunner(EntityService service) {
+        this.service = service;
     }
-
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        StateMachine<MyStates, MyEvents> stateMachine = this.factory.getStateMachine();
+        MyEntity entity = this.service.create();
 
-        stateMachine.start();
-        log.info("current state " + stateMachine.getState().getId().name());
+        StateMachine<MyStates, MyEvents> requestReviewMachine = service.requestReview(entity.getId());
+        log.info("Entity: " + service.byId(entity.getId()));
 
-        stateMachine.sendEvent(MyEvents.REQUEST_REVIEW);
-        log.info("current state " + stateMachine.getState().getId().name());
+        StateMachine<MyStates, MyEvents> requestApproveMachine = service.requestApprove(entity.getId());
+        log.info("Entity: " + service.byId(entity.getId()));
 
-        stateMachine.sendEvent(MyEvents.REQUEST_APPROVE);
-        log.info("current state " + stateMachine.getState().getId().name());
+        StateMachine<MyStates, MyEvents> approveMachine = service.approve(entity.getId());
+        log.info("Entity: " + service.byId(entity.getId()));
 
-        Message<MyEvents> myMessage = MessageBuilder.withPayload(MyEvents.APPROVE)
-                .setHeader("a", "b").build();
-
-        stateMachine.sendEvent(myMessage);
-        log.info("current state " + stateMachine.getState().getId().name());
-
-        stateMachine.sendEvent(MyEvents.DELETE);
-        log.info("current state " + stateMachine.getState().getId().name());
+        StateMachine<MyStates, MyEvents> deleteMachine = service.delete(entity.getId());
+        log.info("Entity: " + service.byId(entity.getId()));
 
 
     }
