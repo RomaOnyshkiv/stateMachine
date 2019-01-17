@@ -22,7 +22,7 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<MyStates, 
 
     @Override
     public void configure(StateMachineConfigurationConfigurer<MyStates, MyEvents> config) throws Exception {
-        StateMachineListenerAdapter<MyStates, MyEvents> adapter = new StateMachineListenerAdapter<MyStates, MyEvents>() {
+        StateMachineListenerAdapter<MyStates, MyEvents> adapter = new StateMachineListenerAdapter<>() {
             @Override
             public void stateChanged(State<MyStates, MyEvents> from, State<MyStates, MyEvents> to) {
                 log.info(String.format("state changed (from: %s to %s)", from + " ", to + " "));

@@ -41,7 +41,7 @@ public class EntityService {
     }
 
 
-    public StateMachine<MyStates, MyEvents> delete(Long entityId) {
+    StateMachine<MyStates, MyEvents> delete(Long entityId) {
         StateMachine<MyStates, MyEvents> sm = this.build(entityId);
 
         Message<MyEvents> deleteMsg = MessageBuilder.withPayload(MyEvents.DELETE)
@@ -51,7 +51,7 @@ public class EntityService {
         return sm;
     }
 
-    public StateMachine<MyStates, MyEvents> approve(Long entityId) {
+    StateMachine<MyStates, MyEvents> approve(Long entityId) {
         StateMachine<MyStates, MyEvents> sm = this.build(entityId);
 
         Message<MyEvents> approveMsg = MessageBuilder.withPayload(MyEvents.APPROVE)
@@ -61,7 +61,7 @@ public class EntityService {
         return sm;
     }
 
-    public StateMachine<MyStates, MyEvents> requestApprove(Long entityId) {
+    StateMachine<MyStates, MyEvents> requestApprove(Long entityId) {
         StateMachine<MyStates, MyEvents> sm = this.build(entityId);
 
         Message<MyEvents> requestApproveMsg = MessageBuilder.withPayload(MyEvents.REQUEST_APPROVE)
@@ -71,7 +71,7 @@ public class EntityService {
         return sm;
     }
 
-    public StateMachine<MyStates, MyEvents> requestReview(Long entityId) {
+    StateMachine<MyStates, MyEvents> requestReview(Long entityId) {
 
         StateMachine<MyStates, MyEvents> sm = this.build(entityId);
 
@@ -93,18 +93,16 @@ public class EntityService {
         StateMachine<MyStates, MyEvents> sm = this.factory.getStateMachine(entityKey);
         sm.stop();
         sm.getStateMachineAccessor().doWithAllRegions(sma -> {
-            sma.addStateMachineInterceptor(new StateMachineInterceptorAdapter<MyStates, MyEvents>(){
+            sma.addStateMachineInterceptor(new StateMachineInterceptorAdapter<>() {
                 @Override
                 public void preStateChange(State<MyStates, MyEvents> state, Message<MyEvents> message, Transition<MyStates, MyEvents> transition, StateMachine<MyStates, MyEvents> stateMachine) {
 
-                    Optional.ofNullable(message).ifPresent(msg -> {
-                       Optional.ofNullable(Long.class.cast(msg.getHeaders().getOrDefault(ID_HEADER, -1L)))
-                               .ifPresent(entityKey1 -> {
-                                   MyEntity entity1 = entityRepo.getOne(entityKey1);
-                                   entity1.setState(state.getId());
-                                   entityRepo.save(entity1);
-                               });
-                    });
+                    Optional.ofNullable(message).ifPresent(msg -> Optional.ofNullable((Long) msg.getHeaders().getOrDefault(ID_HEADER, -1L))
+                            .ifPresent(entityKey1 -> {
+                                MyEntity entity1 = entityRepo.getOne(entityKey1);
+                                entity1.setState(state.getId());
+                                entityRepo.save(entity1);
+                            }));
                 }
             });
             sma.resetStateMachine(new DefaultStateMachineContext<>(entity.getState(), null, null, null));

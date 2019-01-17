@@ -28,7 +28,7 @@ public class WorkFlow {
         StringBuilder builder = new StringBuilder();
 
         for (MyEntity e : entities) {
-            builder.append("Ent: ").append(e.getId()).append(" with status ").append(e.getState());
+            builder.append("Entity: '").append(e.getId()).append("' with status: '").append(e.getState()).append("'\n");
         }
 
         return String.valueOf(builder);
