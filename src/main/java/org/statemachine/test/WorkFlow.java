@@ -2,8 +2,6 @@ package org.statemachine.test;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RestController
 public class WorkFlow {
@@ -24,14 +22,18 @@ public class WorkFlow {
 
     @GetMapping(value = "/ent")
     public String allEnt() {
-        List<MyEntity> entities = entityService.allEnt();
         StringBuilder builder = new StringBuilder();
 
-        for (MyEntity e : entities) {
-            builder.append("Entity: '").append(e.getId()).append("' with status: '").append(e.getState()).append("'\n");
-        }
+        entityService.allEnt().forEach(e -> builder.append("Entity: '")
+                .append(e.getId()).append("' with status: '").append(e.getState()).append("'\t"));
 
         return String.valueOf(builder);
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    public String create() {
+        entityService.create();
+        return "created";
     }
 
 
